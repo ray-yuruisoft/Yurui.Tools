@@ -48,7 +48,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\CacheService.cs" />
-    <Compile Include="src\Captcha.cs" />
+    <Compile Include="src\Captcha\CaptchaHandler.cs" />
+    <Compile Include="src\Captcha\ImageProcess.cs" />
+    <Compile Include="src\Captcha\Threshold.cs" />
     <Compile Include="src\ICacheService.cs" />
     <Compile Include="src\Reflection.cs" />
     <Compile Include="src\StringExtensions.cs" />
