@@ -8,13 +8,8 @@ using System.Text;
 
 namespace Yurui.Tools.Captcha
 {
-    /// <summary>
-    /// 验证码处理类
-    /// </summary>
     public static class ImageProcess
     {
-
-        #region 指针的准确定位
 
         /*
       
@@ -29,12 +24,6 @@ namespace Yurui.Tools.Captcha
        1位索引：scan0+Y* stride+X/8。当前指针所指的字节中的每一位都表示一个像素的索引颜色，调色盘为两色，最左边的像素为8，最右边的像素为0。
 
         */
-
-        #endregion
-
-        #region 灰度化
-
-        #region enum
 
         /// <summary>
         /// 图片灰度化方法的类型
@@ -66,11 +55,6 @@ namespace Yurui.Tools.Captcha
             /// </summary>
             WeightedMean
         }
-
-        #endregion
-
-        #region private Methrod
-
         private static int GetGrayValueByMax(int r, int g, int b)
         {
             int max = r;
@@ -98,8 +82,6 @@ namespace Yurui.Tools.Captcha
         {
             return b;
         }
-
-        #endregion
 
         /// <summary>
         /// 图片灰度化处理指针法
@@ -156,12 +138,6 @@ namespace Yurui.Tools.Captcha
             return img;
         }
 
-        #endregion
-
-        #region 二值化
-
-        #region enum
-
         /// <summary>
         /// 图片灰度化方法的类型
         /// </summary>
@@ -212,14 +188,8 @@ namespace Yurui.Tools.Captcha
             Yen
         }
 
-        #endregion
-
-        #region pre
-
-        #region 直方图
-
         /// <summary>
-        /// 生成直方图，9毫秒
+        /// 生成直方图
         /// </summary>
         /// <param name="img"></param>
         /// <returns></returns>
@@ -254,47 +224,6 @@ namespace Yurui.Tools.Captcha
         }
 
         /// <summary>
-        /// 生成直方图，40毫秒
-        /// </summary>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        unsafe public static int[] GetHistGram2(Bitmap image)
-        {
-            BitmapData bd = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, image.PixelFormat);
-            byte* pt = (byte*)bd.Scan0;
-            int[] pixelNum = new int[256]; //图象直方图，共256个点
-            byte color;
-            byte* pline;
-            int step = 1;
-            switch (image.PixelFormat)
-            {
-                case PixelFormat.Format24bppRgb:
-                    step = 3;
-                    break;
-                case PixelFormat.Format32bppArgb:
-                    step = 4;
-                    break;
-                case PixelFormat.Format8bppIndexed:
-                    step = 1;
-                    break;
-            }
-            //生成直方图
-            for (int i = 0; i < image.Height; i++)
-            {
-                pline = pt + i * bd.Stride;
-                for (int j = 0; j < image.Width; j++)
-                {
-                    color = *(pline + j * step); //返回各个点的颜色，以RGB表示
-                    pixelNum[color]++; //相应的直方图加1
-                }
-            }
-            image.UnlockBits(bd);
-            image.Dispose();
-            return pixelNum;
-        }
-
-        //一个好的阈值应该对应着直方图中两个峰之间的最小值。但是，由于灰度直方图中的随机波动，两个峰尖的最大值和他们之间谷底的最小值都不能被很好的确定。所以需对直方图进行平滑处理。
-        /// <summary>
         /// 直方图平滑化
         /// </summary>
         /// <param name="pixelNum"></param>
@@ -321,54 +250,54 @@ namespace Yurui.Tools.Captcha
             }
         }
 
-        #endregion
-
-        #endregion
-
-        #region step
-
         /// <summary>
         /// 获得阀值
         /// </summary>
         /// <param name="image"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static int GetThreshValue(Bitmap image, ThresholdType type = ThresholdType.OSTU)
+        public static int GetThreshValue(Bitmap image, ThresholdType type = ThresholdType.OSTU, int[] HistGramS = null)
         {
             var histGram = GetHistGram(image);
             SmoothHistGram(histGram);
-            int threshold = 0;
-            switch (type)
-            {
-                case ThresholdType.Mean:
-                    threshold = Threshold.GetMeanThreshold(histGram);
-                    break;
-                default:
-                    threshold = Threshold.GetOSTUThreshold(histGram);
-                    break;
-            }
-
-            return threshold;
+            return GetThreshValue(histGram, type, HistGramS);
         }
-
-        public static int GetThreshValue(int [] histGram, ThresholdType type = ThresholdType.OSTU)
+        public static int GetThreshValue(int[] HistGram, ThresholdType type = ThresholdType.OSTU, int[] HistGramS = null)
         {
-            int threshold = 0;
             switch (type)
             {
                 case ThresholdType.Mean:
-                    threshold = Threshold.GetMeanThreshold(histGram);
-                    break;
+                    return Threshold.GetMeanThreshold(HistGram);
+                case ThresholdType.HuangFuzzy:
+                    return Threshold.GetHuangFuzzyThreshold(HistGram);
+                case ThresholdType.Minimum:
+                    if (HistGramS == null) return -1;
+                    return Threshold.GetMinimumThreshold(HistGram, HistGramS);
+                case ThresholdType.Intermodes:
+                    if (HistGramS == null) return -1;
+                    return Threshold.GetIntermodesThreshold(HistGram, HistGramS);
+                case ThresholdType.PTile:
+                    return Threshold.GetPTileThreshold(HistGram);
+                case ThresholdType.IterativeBest:
+                    return Threshold.GetIterativeBestThreshold(HistGram);
+                case ThresholdType.OSTU:
+                    return Threshold.GetOSTUThreshold(HistGram);
+                case ThresholdType.OneDMaxEntropy:
+                    return Threshold.Get1DMaxEntropyThreshold(HistGram);
+                case ThresholdType.MomentPreserving:
+                    return Threshold.GetMomentPreservingThreshold(HistGram);
+                case ThresholdType.KittlerMinError:
+                    return Threshold.GetKittlerMinError(HistGram);
+                case ThresholdType.IsoData:
+                    return Threshold.GetIsoDataThreshold(HistGram);
+                case ThresholdType.Shanbhag:
+                    return Threshold.GetShanbhagThreshold(HistGram);
+                case ThresholdType.Yen:
+                    return Threshold.GetYenThreshold(HistGram);
                 default:
-                    threshold = Threshold.GetOSTUThreshold(histGram);
-                    break;
+                    return Threshold.GetOSTUThreshold(HistGram);
             }
-
-            return threshold;
         }
-
-
-
 
         /// <summary>
         /// 二值化处理
@@ -412,16 +341,12 @@ namespace Yurui.Tools.Captcha
                 return dstBitmap;
             }
         }
-
-        #endregion
-
         public static Bitmap DoBinaryzation(Bitmap src)
         {
             var v = GetThreshValue(src);
             return PBinary(src, v);
         }
 
-        #endregion
 
         #region 验证码
 
