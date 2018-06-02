@@ -38,6 +38,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,6 +54,7 @@
     <Compile Include="src\Captcha\ImageProcess.cs" />
     <Compile Include="src\Captcha\Threshold.cs" />
     <Compile Include="src\ICacheService.cs" />
+    <Compile Include="src\ILogger.cs" />
     <Compile Include="src\Reflection.cs" />
     <Compile Include="src\StringExtensions.cs" />
   </ItemGroup>

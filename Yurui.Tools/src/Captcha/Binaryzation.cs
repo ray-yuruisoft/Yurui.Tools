@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Yurui.Tools.Captcha
 {
@@ -57,7 +53,7 @@ namespace Yurui.Tools.Captcha
             byte* SrcP, DestP;
             for (int Y = 0; Y < Height; Y++)
             {
-                SrcP = (byte*)SrcData.Scan0 + Y * SrcStride;         // 必须在某个地方开启unsafe功能，其实C#中的unsafe很safe，搞的好吓人。            
+                SrcP = (byte*)SrcData.Scan0 + Y * SrcStride;
                 DestP = (byte*)DestData.Scan0 + Y * DestStride;
                 for (int X = 0; X < Width; X++)
                 {
@@ -145,6 +141,10 @@ namespace Yurui.Tools.Captcha
             Thr = GetThreshold();
             DoBinaryzation(GrayBmp, DestBmp, Thr);
             DrawHistGram(HistBmp, HistGram);
+            if (thresholdType == ImageProcess.ThresholdType.Minimum || thresholdType == ImageProcess.ThresholdType.Intermodes)
+            {
+                DrawHistGram(SmoothHistBmp, HistGramS);
+            }
         }
     }
 }
