@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Yurui.Tools
+namespace Yurui.Tools.Cache
 {
     public class CacheService : ICacheService
     {

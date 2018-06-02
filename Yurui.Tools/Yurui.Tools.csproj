@@ -32,13 +32,45 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.9.2\lib\net45\AngleSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Cells, Version=7.4.1.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.1.0.0\lib\Aspose.Cells.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Pdf, Version=7.7.0.0, Culture=neutral, PublicKeyToken=47b2d0fcacdd3eb6, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.1.0.0\lib\Aspose.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Slides, Version=7.2.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.1.0.0\lib\Aspose.Slides.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Words, Version=14.7.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.1.0.0\lib\Aspose.Words.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlSanitizer, Version=3.0.0.0, Culture=neutral, PublicKeyToken=61c49a1a9e79cc28, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlSanitizer.4.0.185\lib\net45\HtmlSanitizer.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.2.6\lib\net45\StackExchange.Redis.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,18 +80,73 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\CacheService.cs" />
+    <Compile Include="src\Cache\CacheService.cs" />
     <Compile Include="src\Captcha\Binaryzation.cs" />
     <Compile Include="src\Captcha\CaptchaHandler.cs" />
     <Compile Include="src\Captcha\ImageProcess.cs" />
     <Compile Include="src\Captcha\Threshold.cs" />
-    <Compile Include="src\ICacheService.cs" />
-    <Compile Include="src\ILogger.cs" />
-    <Compile Include="src\Reflection.cs" />
-    <Compile Include="src\StringExtensions.cs" />
+    <Compile Include="src\Cache\ICacheService.cs" />
+    <Compile Include="src\Database\DataExt.cs" />
+    <Compile Include="src\Database\DataTableHelper.cs" />
+    <Compile Include="src\Database\MySqlHelper.cs" />
+    <Compile Include="src\DateTimeExt\ChineseCalendar.cs" />
+    <Compile Include="src\DateTimeExt\CNCalendar.cs" />
+    <Compile Include="src\DateTimeExt\DateTimeHelper.cs" />
+    <Compile Include="src\DateTimeExt\DateUtil.cs" />
+    <Compile Include="src\DateTimeExt\TimeHelper.cs" />
+    <Compile Include="src\Extensions.cs" />
+    <Compile Include="src\Files\Compress.cs" />
+    <Compile Include="src\Files\DocumentConvert.cs" />
+    <Compile Include="src\Files\ExtensionAttach.cs" />
+    <Compile Include="src\Files\FileExt.cs" />
+    <Compile Include="src\Files\INIFile.cs" />
+    <Compile Include="src\Hardware\CpuInfo.cs" />
+    <Compile Include="src\Hardware\CPU_INFO.cs" />
+    <Compile Include="src\Hardware\DiskData.cs" />
+    <Compile Include="src\Hardware\MemoryInfo.cs" />
+    <Compile Include="src\Hardware\NetData.cs" />
+    <Compile Include="src\Hardware\OnLogicalDiskProc.cs" />
+    <Compile Include="src\Hardware\RamInfo.cs" />
+    <Compile Include="src\Hardware\SystemInfo.cs" />
+    <Compile Include="src\Hardware\SystemtimeInfo.cs" />
+    <Compile Include="src\Hardware\Unit.cs" />
+    <Compile Include="src\Html\HtmlHelper.cs" />
+    <Compile Include="src\Html\HtmlTools.cs" />
+    <Compile Include="src\Log\ILogger.cs" />
+    <Compile Include="src\Media\ImageUtilities.cs" />
+    <Compile Include="src\Models\AsposeLicense.cs" />
+    <Compile Include="src\Models\BaiduIP.cs" />
+    <Compile Include="src\Models\Email.cs" />
+    <Compile Include="src\Models\IspInfo.cs" />
+    <Compile Include="src\Models\PhysicsAddress.cs" />
+    <Compile Include="src\Models\TaobaoIP.cs" />
+    <Compile Include="src\Net\CookieHelper.cs" />
+    <Compile Include="src\Net\FtpClient.cs" />
+    <Compile Include="src\Net\MultiThreadDownloader.cs" />
+    <Compile Include="src\Net\PartialDownloader.cs" />
+    <Compile Include="src\Net\SocketClient.cs" />
+    <Compile Include="src\Net\WebExtension.cs" />
+    <Compile Include="src\NoSQL\RedisConnectionManager.cs" />
+    <Compile Include="src\NoSQL\RedisHelper.cs" />
+    <Compile Include="src\Reflection\ReflectionHelper.cs" />
+    <Compile Include="src\Extension\StringExtensions.cs" />
+    <Compile Include="src\Security\Encrypt.cs" />
+    <Compile Include="src\Security\HashEncode.cs" />
+    <Compile Include="src\Security\RSACrypt.cs" />
+    <Compile Include="src\Strings\ValidateCode.cs" />
+    <Compile Include="src\Systems\ConcurrentLimitedQueue.cs" />
+    <Compile Include="src\Systems\Disposable.cs" />
+    <Compile Include="src\Systems\EnumExt.cs" />
+    <Compile Include="src\Systems\LimitedQueue.cs" />
+    <Compile Include="src\Systems\Lock.cs" />
+    <Compile Include="src\Systems\RedisLock.cs" />
+    <Compile Include="src\Win32\Windows.cs" />
+    <Compile Include="src\Win32\WindowsCommand.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

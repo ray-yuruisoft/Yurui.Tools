@@ -9,7 +9,6 @@ namespace Yurui.Tools.Test
     [TestClass]
     public class CaptchaUnitTest
     {
-
         private static Logger log = new Logger("CaptchaUnitTest");
         private static System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
         [TestMethod]
