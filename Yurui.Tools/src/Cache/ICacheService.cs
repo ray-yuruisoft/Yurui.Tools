@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yurui.Tools
+namespace Yurui.Tools.Cache
 {
     interface ICacheService
     {
@@ -225,7 +225,7 @@ namespace Yurui.Tools
 
         #endregion
 
-        T GetOrCreate<T>(string key, DateTime expiresSliding, DateTime expiressAbsoulte, Func<T> factory) where T : class, new();
+        T GetOrCreate<T>(string key, TimeSpan expiresSliding, TimeSpan expiressAbsoulte, Func<T> factory) where T : class, new();
 
     }
 }
