@@ -31,9 +31,27 @@ namespace Yurui.Tools.Cache
                 CacheItemPolicy policy = new CacheItemPolicy
                 {
                     AbsoluteExpiration = DateTime.Now.Add(expiressAbsoulte),
-                    SlidingExpiration = expiresSliding
                 };
+                var res = factory();
+                if (res != null)
+                {
+                    _cache.Set(key, res, policy);
+                    value = _cache.Get(key) as T;
+                    return value;
+                }
+            }
+            return value;
+        }
 
+        public T GetOrCreate<T>(string key, Func<T> factory) where T : class, new()
+        {
+            dynamic value = _cache.Get(key) as T;
+            if (value == default(T) || (value is IEnumerable && value.Count == 0))
+            {
+                CacheItemPolicy policy = new CacheItemPolicy
+                {
+                    AbsoluteExpiration = System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration
+                };
                 var res = factory();
                 if (res != null)
                 {
@@ -61,6 +79,14 @@ namespace Yurui.Tools.Cache
             return Exists(key);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expiresSliding">only one  can be TimeSpan.Zero</param>
+        /// <param name="expiressAbsoulte">only one can be TimeSpan.MaxValue</param>
+        /// <returns></returns>
         public bool Add(string key, object value, TimeSpan expiresSliding, TimeSpan expiressAbsoulte)
         {
             if (key == null)
@@ -71,16 +97,30 @@ namespace Yurui.Tools.Cache
             {
                 throw new ArgumentNullException(nameof(value));
             }
-            _cache.Set(key, value,
-                new CacheItemPolicy
-                {
-                    SlidingExpiration = expiresSliding,
-                    AbsoluteExpiration = DateTime.Now.Add(expiressAbsoulte)
-                });
-
+            if (expiresSliding == TimeSpan.Zero && expiressAbsoulte != TimeSpan.MaxValue)
+            {
+                _cache.Set(key, value,
+               new CacheItemPolicy
+               {
+                   SlidingExpiration = TimeSpan.Zero,
+                   AbsoluteExpiration = DateTime.Now.Add(expiressAbsoulte)
+               });
+            }
+            else if (expiresSliding != TimeSpan.Zero && expiressAbsoulte == TimeSpan.MaxValue)
+            {
+                _cache.Set(key, value,
+              new CacheItemPolicy
+              {
+                  SlidingExpiration = expiresSliding,
+                  AbsoluteExpiration = DateTimeOffset.MaxValue
+              });
+            }
+            else
+            {
+                return false;
+            }
             return Exists(key);
         }
-
         public bool Add(string key, object value, TimeSpan expiresIn, bool isSliding = false)
         {
             if (key == null)
@@ -105,7 +145,6 @@ namespace Yurui.Tools.Cache
                    });
             return Exists(key);
         }
-
         public Task<bool> AddAsync(string key, object value)
         {
             return Task.Factory.StartNew(() =>
@@ -113,7 +152,6 @@ namespace Yurui.Tools.Cache
                 return Add(key, value);
             });
         }
-
         public Task<bool> AddAsync(string key, object value, TimeSpan expiresSliding, TimeSpan expiressAbsoulte)
         {
             return Task.Factory.StartNew(() =>
@@ -121,7 +159,6 @@ namespace Yurui.Tools.Cache
                 return Add(key, value, expiresSliding, expiressAbsoulte);
             });
         }
-
         public Task<bool> AddAsync(string key, object value, TimeSpan expiresIn, bool isSliding = false)
         {
             return Task.Factory.StartNew(() =>
@@ -142,7 +179,6 @@ namespace Yurui.Tools.Cache
             }
             return _cache.Contains(key);
         }
-
         public Task<bool> ExistsAsync(string key)
         {
             return Task.Factory.StartNew(() =>
@@ -163,7 +199,6 @@ namespace Yurui.Tools.Cache
             }
             return _cache.Get(key) as T;
         }
-
         public object Get(string key)
         {
             if (key == null)
@@ -172,7 +207,6 @@ namespace Yurui.Tools.Cache
             }
             return _cache.Get(key);
         }
-
         public IDictionary<string, object> GetAll(IEnumerable<string> keys)
         {
             if (keys == null)
@@ -183,7 +217,6 @@ namespace Yurui.Tools.Cache
             keys.ToList().ForEach(item => dict.Add(item, _cache.Get(item)));
             return dict;
         }
-
         public Task<IDictionary<string, object>> GetAllAsync(IEnumerable<string> keys)
         {
             return Task.Factory.StartNew(() =>
@@ -191,7 +224,6 @@ namespace Yurui.Tools.Cache
                 return GetAll(keys);
             });
         }
-
         public Task<T> GetAsync<T>(string key) where T : class
         {
             return Task.Factory.StartNew(() =>
@@ -199,7 +231,6 @@ namespace Yurui.Tools.Cache
                 return Get<T>(key);
             });
         }
-
         public Task<object> GetAsync(string key)
         {
             return Task.Factory.StartNew(() =>

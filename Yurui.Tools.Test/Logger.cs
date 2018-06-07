@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Yurui.Tools.Test
 {
-    public class Logger: Yurui.Tools.ILogger
+    public class Logger: Yurui.Tools.Log.ILogger
     {
         NLog.Logger logger;
 

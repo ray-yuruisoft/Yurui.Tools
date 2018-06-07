@@ -226,6 +226,6 @@ namespace Yurui.Tools.Cache
         #endregion
 
         T GetOrCreate<T>(string key, TimeSpan expiresSliding, TimeSpan expiressAbsoulte, Func<T> factory) where T : class, new();
-
+        T GetOrCreate<T>(string key, Func<T> factory) where T : class, new();
     }
 }
